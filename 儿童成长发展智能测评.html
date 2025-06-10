@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>童成长 | 儿童智能测评系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@6.0.0/css/all.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .header-bg {
+                background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            }
+            .card-glow {
+                box-shadow: 0 10px 30px rgba(68, 97, 238, 0.15);
+            }
+            .btn-glow {
+                box-shadow: 0 5px 15px rgba(68, 97, 238, 0.3);
+            }
+            .progress-active {
+                box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5), 0 0 15px rgba(68, 97, 238, 0.5);
+            }
+            .radar-container {
+                position: relative;
+                width: 100%;
+                height: 300px;
+            }
+            .feature-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .feature-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .institution-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .institution-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm fixed w-full z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMzlBNkY2IiBkPSJNMTI4IDY0YzAtMTcuNjcgMTQuMzMtMzIgMzItMzJoMzJjMTcuNjcgMCAzMiAxNC4zMyAzMiAzMnYzMmMwIDE3LjY3LTE0LjMzIDMyLTMyIDMySDEyOGMtMTcuNjcgMC0zMi0xNC4zMy0zMi0zMlY2NHptMCA0OGgzOGMxNy42NyAwIDMyIDE0LjMzIDMyIDMydjMyYzAgMTcuNjctMTQuMzMgMzItMzIgMzJIMTI4Yy0xNy42NyAwLTMyLTE0LjMzLTMyLTMydi0zMmMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyem0xMjggMGMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyaDMyYzE3LjY3IDAgMzIgMTQuMzMgMzIgMzJ2MzJjMCAxNy42Ny0xNC4zMyAzMi0zMiAzMkgxOTJjLTE3LjY3IDAtMzItMTQuMzMtMzItMzJ2LTMyeiIvPjwvc3ZnPg==" alt="Logo" class="h-10">
+                <span class="ml-3 text-xl font-bold text-indigo-600">童成长</span>
+            </div>
+            
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition-colors">首页</a>
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition-colors">测评</a>
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition-colors">资源</a>
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition-colors">社区</a>
+            </div>
+            
+            <div class="hidden md:block">
+                <button class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition-colors">登录 / 注册</button>
+            </div>
+            
+            <button class="md:hidden text-gray-600 hover:text-indigo-600 transition-colors">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto pt-24 pb-10 px-4">
+        <!-- 测评介绍部分 -->
+        <section id="intro" class="bg-white rounded-xl shadow-lg py-10 px-6 mb-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-3xl font-bold text-indigo-800 mb-4">儿童多元智能测评</h1>
+                <p class="text-gray-600 mb-8">基于霍华德·加德纳多元智能理论，帮助您全面了解孩子的智能优势</p>
+                
+                <div class="flex justify-center mt-6">
+                    <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="儿童测评" class="rounded-lg shadow-md max-w-full h-64 object-cover">
+                </div>
+                
+                <div class="mt-10 space-y-6">
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <i class="fas fa-brain text-indigo-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">全面评估八大智能</h3>
+                            <p class="text-gray-600">语言、逻辑、空间、音乐、身体、人际、内省、自然观察</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                            <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">个性化成长建议</h3>
+                            <p class="text-gray-600">根据测评结果提供量身定制的成长指导方案</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">科学理论支持</h3>
+                            <p class="text-gray-600">基于哈佛大学霍华德·加德纳教授的多元智能理论</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <button id="start-btn" class="bg-indigo-600 text-white px-8 py-3 rounded-full hover:bg-indigo-700 transition-colors shadow-md">
+                        开始测评 <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 功能特点部分 -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">为什么选择童成长？</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white rounded-xl shadow-sm p-6 text-center feature-card">
+                    <div class="w-16 h-16 rounded-full mx-auto bg-indigo-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-check-double text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">科学评估</h3>
+                    <p class="text-gray-600">基于权威教育理论，科学评估孩子智能发展情况</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 text-center feature-card">
+                    <div class="w-16 h-16 rounded-full mx-auto bg-green-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-lightbulb text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">专业指导</h3>
+                    <p class="text-gray-600">教育专家提供个性化成长建议和教育资源推荐</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 text-center feature-card">
+                    <div class="w-16 h-16 rounded-full mx-auto bg-blue-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">家长社区</h3>
+                    <p class="text-gray-600">与志同道合的家长交流经验，分享育儿心得</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 text-center feature-card">
+                    <div class="w-16 h-16 rounded-full mx-auto bg-yellow-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-pie text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">成长追踪</h3>
+                    <p class="text-gray-600">记录孩子成长轨迹，对比分析智能发展变化</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 推荐教育机构 -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-10">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">推荐教育机构</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="institution-card p-6 bg-gray-50 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMzlBNkY2IiBkPSJNMTI4IDY0YzAtMTcuNjcgMTQuMzMtMzIgMzItMzJoMzJjMTcuNjcgMCAzMiAxNC4zMyAzMiAzMnYzMmMwIDE3LjY3LTE0LjMzIDMyLTMyIDMySDEyOGMtMTcuNjcgMC0zMi0xNC4zMy0zMi0zMlY2NHptMCA0OGgzOGMxNy42NyAwIDMyIDE0LjMzIDMyIDMydjMyYzAgMTcuNjctMTQuMzMgMzItMzIgMzJIMTI4Yy0xNy42NyAwLTMyLTE0LjMzLTMyLTMydi0zMmMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyem0xMjggMGMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyaDMyYzE3LjY3IDAgMzIgMTQuMzMgMzIgMzJ2MzJjMCAxNy42Ny0xNC4zMyAzMi0zMiAzMkgxOTJjLTE3LjY3IDAtMzItMTQuMzMtMzItMzJ2LTMyeiIvPjwvc3ZnPg==" alt="机构Logo" class="w-12 h-12 rounded-full mr-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">哈佛儿童教育研究中心</h3>
+                            <p class="text-gray-600 text-sm">专注于儿童多元智能发展研究</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">哈佛大学教育学院的专业研究机构，致力于儿童智能发展研究和教育实践。</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-700 flex items-center justify-center">
+                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                
+                <div class="institution-card p-6 bg-gray-50 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMzlBNkY2IiBkPSJNMTI4IDY0YzAtMTcuNjcgMTQuMzMtMzIgMzItMzJoMzJjMTcuNjcgMCAzMiAxNC4zMyAzMiAzMnYzMmMwIDE3LjY3LTE0LjMzIDMyLTMyIDMySDEyOGMtMTcuNjcgMC0zMi0xNC4zMy0zMi0zMlY2NHptMCA0OGgzOGMxNy42NyAwIDMyIDE0LjMzIDMyIDMydjMyYzAgMTcuNjctMTQuMzMgMzItMzIgMzJIMTI4Yy0xNy42NyAwLTMyLTE0LjMzLTMyLTMydi0zMmMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyem0xMjggMGMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyaDMyYzE3LjY3IDAgMzIgMTQuMzMgMzIgMzJ2MzJjMCAxNy42Ny0xNC4zMyAzMi0zMiAzMkgxOTJjLTE3LjY3IDAtMzItMTQuMzMtMzItMzJ2LTMyeiIvPjwvc3ZnPg==" alt="机构Logo" class="w-12 h-12 rounded-full mr-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">北京师范大学教育研究院</h3>
+                            <p class="text-gray-600 text-sm">儿童心理与教育研究</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">国内顶尖教育研究机构，专注于儿童心理发展和教育方法研究。</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-700 flex items-center justify-center">
+                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                
+                <div class="institution-card p-6 bg-gray-50 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMzlBNkY2IiBkPSJNMTI4IDY0YzAtMTcuNjcgMTQuMzMtMzIgMzItMzJoMzJjMTcuNjcgMCAzMiAxNC4zMyAzMiAzMnYzMmMwIDE3LjY3LTE0LjMzIDMyLTMyIDMySDEyOGMtMTcuNjcgMC0zMi0xNC4zMy0zMi0zMlY2NHptMCA0OGgzOGMxNy42NyAwIDMyIDE0LjMzIDMyIDMydjMyYzAgMTcuNjctMTQuMzMgMzItMzIgMzJIMTI4Yy0xNy42NyAwLTMyLTE0LjMzLTMyLTMydi0zMmMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyem0xMjggMGMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyaDMyYzE3LjY3IDAgMzIgMTQuMzMgMzIgMzJ2MzJjMCAxNy42Ny0xNC4zMyAzMi0zMiAzMkgyMTZjLTE3LjY3IDAtMzItMTQuMzMtMzItMzJ2LTMyeiIvPjwvc3ZnPg==" alt="机构Logo" class="w-12 h-12 rounded-full mr-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">中国儿童发展研究中心</h3>
+                            <p class="text-gray-600 text-sm">全面发展研究与实践</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">专注于儿童全面发展的研究机构，提供科学的教育指导和实践方案。</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-700 flex items-center justify-center">
+                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                
+                <div class="institution-card p-6 bg-gray-50 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMzlBNkY2IiBkPSJNMTI4IDY0YzAtMTcuNjcgMTQuMzMtMzIgMzItMzJoMzJjMTcuNjcgMCAzMiAxNC4zMyAzMiAzMnYzMmMwIDE3LjY3LTE0LjMzIDMyLTMyIDMySDEyOGMtMTcuNjcgMC0zMi0xNC4zMy0zMi0zMlY2NHptMCA0OGgzOGMxNy42NyAwIDMyIDE0LjMzIDMyIDMydjMyYzAgMTcuNjctMTQuMzMgMzItMzIgMzJIMTI4Yy0xNy42NyAwLTMyLTE0LjMzLTMyLTMydi0zMmMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyem0xMjggMGMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyaDMyYzE3LjY3IDAgMzIgMTQuMzMgMzIgMzJ2MzJjMCAxNy42Ny0xNC4zMyAzMi0zMiAzMkgyMTZjLTE3LjY3IDAtMzItMTQuMzMtMzItMzJ2LTMyeiIvPjwvc3ZnPg==" alt="机构Logo" class="w-12 h-12 rounded-full mr-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">清华幼儿教育发展中心</h3>
+                            <p class="text-gray-600 text-sm">科学启蒙与全面发展</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">清华大学附属教育机构，专注于幼儿科学启蒙和全面发展。</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-700 flex items-center justify-center">
+                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                
+                <div class="institution-card p-6 bg-gray-50 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMzlBNkY2IiBkPSJNMTI4IDY0YzAtMTcuNjcgMTQuMzMtMzIgMzItMzJoMzJjMTcuNjcgMCAzMiAxNC4zMyAzMiAzMnYzMmMwIDE3LjY3LTE0LjMzIDMyLTMyIDMySDEyOGMtMTcuNjcgMC0zMi0xNC4zMy0zMi0zMlY2NHptMCA0OGgzOGMxNy42NyAwIDMyIDE0LjMzIDMyIDMydjMyYzAgMTcuNjctMTQuMzMgMzItMzIgMzJIMTI4Yy0xNy42NyAwLTMyLTE0LjMzLTMyLTMydi0zMmMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyem0xMjggMGMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyaDMyYzE3LjY3IDAgMzIgMTQuMzMgMzIgMzJ2MzJjMCAxNy42Ny0xNC4zMyAzMi0zMiAzMkgyMTZjLTE3LjY3IDAtMzItMTQuMzMtMzItMzJ2LTMyeiIvPjwvc3ZnPg==" alt="机构Logo" class="w-12 h-12 rounded-full mr-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">国际多元智能教育协会</h3>
+                            <p class="text-gray-600 text-sm">多元智能理论研究与实践</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">国际性教育研究组织，专注于多元智能理论的研究与实践应用。</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-700 flex items-center justify-center">
+                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                
+                <div class="institution-card p-6 bg-gray-50 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMzlBNkY2IiBkPSJNMTI4IDY0YzAtMTcuNjcgMTQuMzMtMzIgMzItMzJoMzJjMTcuNjcgMCAzMiAxNC4zMyAzMiAzMnYzMmMwIDE3LjY3LTE0LjMzIDMyLTMyIDMySDEyOGMtMTcuNjcgMC0zMi0xNC4zMy0zMi0zMlY2NHptMCA0OGgzOGMxNy42NyAwIDMyIDE0LjMzIDMyIDMydjMyYzAgMTcuNjctMTQuMzMgMzItMzIgMzJIMTI4Yy0xNy42NyAwLTMyLTE0LjMzLTMyLTMydi0zMmMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyem0xMjggMGMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyaDMyYzE3LjY3IDAgMzIgMTQuMzMgMzIgMzJ2MzJjMCAxNy42Ny0xNC4zMyAzMi0zMiAzMkgyMTZjLTE3LjY3IDAtMzItMTQuMzMtMzItMzJ2LTMyeiIvPjwvc3ZnPg==" alt="机构Logo" class="w-12 h-12 rounded-full mr-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">中国家庭教育学会</h3>
+                            <p class="text-gray-600 text-sm">家庭教育指导与支持</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">国家级家庭教育研究机构，提供专业的家庭教育指导和服务。</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-700 flex items-center justify-center">
+                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 测评区域 -->
+        <section id="assessment" class="hidden bg-white rounded-xl shadow-lg p-8 mb-10">
+            <!-- 进度条 -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-500">步骤 <span id="current-step">1</span>/4</span>
+                    <span class="text-sm text-gray-500"><span id="progress-percentage">0</span>%</span>
+                </div>
+                <div class="h-2 bg-gray-200 rounded-full">
+                    <div id="progress-bar" class="h-2 bg-indigo-600 rounded-full w-0 transition-width duration-300"></div>
+                </div>
+            </div>
+            
+            <!-- 测评内容 -->
+            <div id="assessment-content">
+                <!-- 动态内容将通过JS渲染 -->
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="flex justify-between mt-8">
+                <button id="prev-btn" class="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50">
+                    <i class="fas fa-arrow-left mr-2"></i> 上一步
+                </button>
+                <button id="next-btn" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    下一步 <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 结果区域 -->
+        <section id="results" class="hidden bg-white rounded-xl shadow-lg p-8">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold text-indigo-800 mb-4">测评结果</h2>
+                <p class="text-gray-600">基于您的回答，我们生成了以下智能分析报告</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-8 mb-10">
+                <div class="md:w-1/3 bg-indigo-100 p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-indigo-800 mb-2">孩子信息</h3>
+                    <div id="child-info">
+                        <!-- 动态内容将通过JS渲染 -->
+                    </div>
+                </div>
+                
+                <div class="md:w-2/3">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">智能雷达图</h3>
+                    <div class="radar-container">
+                        <canvas id="radar-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-10">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">优势智能分析</h3>
+                <div id="strengths-analysis">
+                    <!-- 动态内容将通过JS渲染 -->
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-xl font-bold text-gray-800 mb-4">个性化成长建议</h3>
+                <div id="growth-recommendations">
+                    <!-- 动态内容将通过JS渲染 -->
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <button id="restart-btn" class="bg-indigo-600 text-white px-8 py-3 rounded-full hover:bg-indigo-700 transition-colors shadow-md">
+                    <i class="fas fa-redo-alt mr-2"></i> 重新测评
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white shadow-inner py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start mb-8">
+                <div>
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMzlBNkY2IiBkPSJNMTI4IDY0YzAtMTcuNjcgMTQuMzMtMzIgMzItMzJoMzJjMTcuNjcgMCAzMiAxNC4zMyAzMiAzMnYzMmMwIDE3LjY3LTE0LjMzIDMyLTMyIDMySDEyOGMtMTcuNjcgMC0zMi0xNC4zMy0zMi0zMlY2NHptMCA0OGgzOGMxNy42NyAwIDMyIDE0LjMzIDMyIDMydjMyYzAgMTcuNjctMTQuMzMgMzItMzIgMzJIMTI4Yy0xNy42NyAwLTMyLTE0LjMzLTMyLTMydi0zMmMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyem0xMjggMGMwLTE3LjY3IDE0LjMzLTMyIDMyLTMyaDMyYzE3LjY3IDAgMzIgMTQuMzMgMzIgMzJ2MzJjMCAxNy42Ny0xNC4zMyAzMi0zMiAzMkgyMTZjLTE3LjY3IDAtMzItMTQuMzMtMzItMzJ2LTMyeiIvPjwvc3ZnPg==" alt="Logo" class="h-10 mb-4">
+                    <p class="text-gray-600">基于多元智能理论的儿童成长评估系统</p>
+                </div>
+                
+                <div class="mt-6 md:mt-0 md:ml-16 space-y-4">
+                    <h4 class="text-sm font-bold text-gray-800 mb-2">快速链接</h4>
+                    <ul>
+                        <li><a href="#" class="text-gray-600 hover:text-indigo-600">首页</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-indigo-600">关于测评</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-indigo-600">使用教程</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-indigo-600">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div class="mt-6 md:mt-0 md:ml-16 space-y-4">
+                    <h4 class="text-sm font-bold text-gray-800 mb-2">联系我们</h4>
+                    <ul>
+                        <li class="flex items-center text-gray-600 hover:text-indigo-600">
+                            <i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区中关村
+                        </li>
+                        <li class="flex items-center text-gray-600 hover:text-indigo-600">
+                            <i class="fas fa-phone mr-2"></i> 400-123-4567
+                        </li>
+                        <li class="flex items-center text-gray-600 hover:text-indigo-600">
+                            <i class="fas fa-envelope mr-2"></i> info@tongchengzhang.com
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 py-4">
+                <p class="text-gray-600 text-sm text-center">© 2023 童成长 - 儿童智能测评系统. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 数据模型
+        const assessmentData = {
+            childInfo: {
+                name: '',
+                age: '',
+                gender: ''
+            },
+            currentStep: 0,
+            totalSteps: 4,
+            answers: [],
+            scores: {
+                linguistic: 0,
+                logical: 0,
+                spatial: 0,
+                musical: 0,
+                bodily: 0,
+                interpersonal: 0,
+                intrapersonal: 0,
+                naturalist: 0
+            },
+            completed: false
+        };
+
+        // 测评问题
+        const assessmentQuestions = [
+            {
+                title: "语言智能",
+                description: "评估孩子的语言能力、表达和理解能力",
+                questions: [
+                    { text: "孩子喜欢讲故事或分享日常经历", type: "linguistic" },
+                    { text: "能够准确描述自己的感受和想法", type: "linguistic" },
+                    { text: "喜欢阅读书籍或听故事", type: "linguistic" },
+                    { text: "与其他孩子互动时通常主动发起对话", type: "interpersonal" },
+                    { text: "能够理解他人情绪变化", type: "interpersonal" },
+                    { text: "擅长说服他人接受自己的观点", type: "interpersonal" }
+                ]
+            },
+            {
+                title: "逻辑数学智能",
+                description: "评估孩子的逻辑思维和数学能力",
+                questions: [
+                    { text: "喜欢玩拼图或积木等需要逻辑思考的游戏", type: "logical" },
+                    { text: "对数字敏感，能记住电话号码或价格", type: "logical" },
+                    { text: "喜欢问'为什么'并探索事物原理", type: "logical" },
+                    { text: "注意到环境中的细节变化", type: "naturalist" },
+                    { text: "喜欢做科学实验或观察自然现象", type: "naturalist" },
+                    { text: "擅长对物品进行分类", type: "naturalist" }
+                ]
+            },
+            {
+                title: "空间与身体智能",
+                description: "评估孩子的空间感知和身体协调能力",
+                questions: [
+                    { text: "喜欢绘画或涂鸦，并能准确描绘物体", type: "spatial" },
+                    { text: "擅长模仿他人的动作", type: "spatial" },
+                    { text: "玩游戏时反应敏捷", type: "spatial" },
+                    { text: "喜欢手工制作或拆装玩具", type: "bodily" },
+                    { text: "很少迷路，能记住走过的路线", type: "bodily" },
+                    { text: "理解方位词（如左右前后）", type: "bodily" }
+                ]
+            },
+            {
+                title: "音乐与内省智能",
+                description: "评估孩子的音乐感知和自我认知能力",
+                questions: [
+                    { text: "听到音乐时会不自觉跟着节奏摆动", type: "musical" },
+                    { text: "能准确模仿歌曲的旋律或节奏", type: "musical" },
+                    { text: "喜欢用歌声表达情绪", type: "musical" },
+                    { text: "经常安静地思考或发呆", type: "intrapersonal" },
+                    { text: "清楚自己的优点和需要改进的地方", type: "intrapersonal" },
+                    { text: "能独立完成任务", type: "intrapersonal" }
+                ]
+            }
+        ];
+
+        // 成长建议
+        const growthSuggestions = {
+            linguistic: {
+                high: "鼓励孩子多阅读不同类型书籍，参加诗歌朗诵或演讲活动，培养语言表达能力。",
+                medium: "提供丰富的阅读材料，多与孩子进行深入对话，提升语言理解和表达能力。",
+                low: "多与孩子交流，从简短对话开始，逐渐增加复杂度，增强语言能力。"
+            },
+            logical: {
+                high: "提供数学游戏、逻辑谜题和科学实验套件，参加编程或机器人课程。",
+                medium: "使用日常生活中的数学应用场景，如购物计算、时间管理等，提升逻辑思维能力。",
+                low: "通过简单数字游戏和分类活动，逐步培养逻辑思维和数学兴趣。"
+            },
+            spatial: {
+                high: "提供绘画、设计软件和建筑模型套件，鼓励参加艺术或设计课程。",
+                medium: "提供绘画和手工材料，鼓励孩子表达创意，提升空间想象力。",
+                low: "通过拼图游戏和简单绘画活动，逐步培养空间感知能力。"
+            },
+            musical: {
+                high: "考虑乐器学习或参加合唱团，探索音乐创作可能性。",
+                medium: "提供简单乐器或音乐游戏，鼓励孩子探索节奏和旋律。",
+                low: "通过听音乐和节奏游戏，培养音乐感知能力。"
+            },
+            bodily: {
+                high: "鼓励参加体育、舞蹈或戏剧活动，发展身体协调性和表现力。",
+                medium: "提供体育活动机会，如球类运动或游泳，增强身体控制能力。",
+                low: "通过简单动作游戏和体育活动，逐步提升身体协调性。"
+            },
+            interpersonal: {
+                high: "鼓励参加团队活动、社区服务或领导力培训，发挥社交优势。",
+                medium: "通过角色扮演和小组活动，增强与人交往的能力。",
+                low: "通过小规模社交活动，逐步建立自信和社交技巧。"
+            },
+            intrapersonal: {
+                high: "支持独立项目和自我反思活动，如写日记或冥想。",
+                medium: "鼓励设定个人目标和自我评估，提升自我认知能力。",
+                low: "通过日常对话帮助认识情绪和优点，逐步建立自我认知。"
+            },
+            naturalist: {
+                high: "多参与户外活动、自然探索和科学观察，培养探索精神。",
+                medium: "通过园艺、自然观察等活动，增强对自然环境的敏感度。",
+                low: "通过简单自然观察活动，逐步培养对环境的兴趣和观察力。"
+            }
+        };
+
+        // DOM元素
+        const startBtn = document.getElementById('start-btn');
+        const assessmentSection = document.getElementById('assessment');
+        const resultsSection = document.getElementById('results');
+        const assessmentContent = document.getElementById('assessment-content');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const currentStepSpan = document.getElementById('current-step');
+        const childInfoContainer = document.getElementById('child-info');
+        const strengthsAnalysisContainer = document.getElementById('strengths-analysis');
+        const recommendationsContainer = document.getElementById('growth-recommendations');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // 初始化测评
+        function initAssessment() {
+            startBtn.addEventListener('click', startAssessment);
+            prevBtn.addEventListener('click', goToPreviousStep);
+            nextBtn.addEventListener('click', goToNextStep);
+            restartBtn.addEventListener('click', restartAssessment);
+        }
+
+        // 开始测评
+        function startAssessment() {
+            document.getElementById('intro').classList.add('hidden');
+            assessmentSection.classList.remove('hidden');
+            
+            const childName = prompt('请输入孩子姓名:');
+            const childAge = prompt('请输入孩子年龄:');
+            const childGender = prompt('请选择孩子性别 (男/女):');
+            
+            if (childName && childAge && (childGender === '男' || childGender === '女')) {
+                assessmentData.childInfo = { name: childName, age: childAge, gender: childGender };
+                renderStep(0);
+            } else {
+                alert('请完整填写孩子信息');
+            }
+        }
+
+        // 渲染当前步骤
+        function renderStep(stepIndex) {
+            const step = assessmentQuestions[stepIndex];
+            assessmentData.currentStep = stepIndex;
+            
+            // 更新进度条
+            const progress = ((stepIndex + 1) / assessmentData.totalSteps) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressPercentage.textContent = Math.round(progress);
+            currentStepSpan.textContent = stepIndex + 1;
+            
+            // 渲染测评内容
+            let questionsHTML = `
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">${step.title}</h3>
+                <p class="text-gray-600 mb-8">${step.description}</p>
+            `;
+            
+            step.questions.forEach((question, index) => {
+                questionsHTML += `
+                    <div class="bg-gray-50 p-5 rounded-xl mb-6">
+                        <p class="text-lg font-medium mb-4">${index + 1}. ${question.text}</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="q${stepIndex}-${index}" value="5" class="question-radio">
+                                <span class="text-gray-700">非常符合</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="q${stepIndex}-${index}" value="4" class="question-radio">
+                                <span class="text-gray-700">比较符合</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="q${stepIndex}-${index}" value="3" class="question-radio">
+                                <span class="text-gray-700">一般</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="q${stepIndex}-${index}" value="2" class="question-radio">
+                                <span class="text-gray-700">不太符合</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="q${stepIndex}-${index}" value="1" class="question-radio">
+                                <span class="text-gray-700">不符合</span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            assessmentContent.innerHTML = questionsHTML;
+            
+            // 添加事件监听
+            document.querySelectorAll('.question-radio').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    checkCompletion();
+                });
+            });
+            
+            checkCompletion();
+        }
+
+        // 检查当前步骤是否完成
+        function checkCompletion() {
+            const stepIndex = assessmentData.currentStep;
+            const step = assessmentQuestions[stepIndex];
+            let completed = true;
+            
+            step.questions.forEach((_, index) => {
+                const radios = document.querySelectorAll(`input[name="q${stepIndex}-${index}"]`);
+                let isChecked = false;
+                
+                radios.forEach(radio => {
+                    if (radio.checked) {
+                        isChecked = true;
+                    }
+                });
+                
+                if (!isChecked) {
+                    completed = false;
+                }
+            });
+            
+            nextBtn.disabled = !completed;
+        }
+
+        // 前往上一步
+        function goToPreviousStep() {
+            saveAnswers();
+            renderStep(assessmentData.currentStep - 1);
+        }
+
+        // 前往下一步
+        function goToNextStep() {
+            saveAnswers();
+            
+            if (assessmentData.currentStep < assessmentData.totalSteps - 1) {
+                renderStep(assessmentData.currentStep + 1);
+            } else {
+                showResults();
+            }
+        }
+
+        // 保存答案
+        function saveAnswers() {
+            const stepIndex = assessmentData.currentStep;
+            const step = assessmentQuestions[stepIndex];
+            
+            step.questions.forEach((question, index) => {
+                const radios = document.querySelectorAll(`input[name="q${stepIndex}-${index}"]`);
+                let answer = null;
+                
+                radios.forEach(radio => {
+                    if (radio.checked) {
+                        answer = parseInt(radio.value);
+                    }
+                });
+                
+                if (answer !== null) {
+                    assessmentData.answers.push(answer);
+                    assessmentData.scores[question.type] += answer;
+                }
+            });
+        }
+
+        // 显示结果
+        function showResults() {
+            assessmentSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            
+            // 渲染孩子信息
+            const childInfoHTML = `
+                <p class="text-lg font-medium text-gray-800 mb-1">${assessmentData.childInfo.name}</p>
+                <p class="text-gray-600 mb-1">年龄: ${assessmentData.childInfo.age}岁</p>
+                <p class="text-gray-600">性别: ${assessmentData.childInfo.gender}</p>
+            `;
+            childInfoContainer.innerHTML = childInfoHTML;
+            
+            // 渲染雷达图
+            renderRadarChart();
+            
+            // 渲染优势智能分析
+            renderStrengthsAnalysis();
+            
+            // 渲染成长建议
+            renderGrowthRecommendations();
+        }
+
+        // 渲染雷达图
+        function renderRadarChart() {
+            const ctx = document.getElementById('radar-chart').getContext('2d');
+            
+            const labels = ['语言智能', '逻辑智能', '空间智能', '音乐智能', '身体智能', '人际智能', '内省智能', '自然智能'];
+            const scores = Object.values(assessmentData.scores);
+            
+            // 归一化分数 (0-100)
+            const normalizedScores = scores.map(score => score / 5 * 100 / 4); // 5个问题，每个1-5分
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '智能评分',
+                        data: normalizedScores,
+                        backgroundColor: 'rgba(68, 97, 238, 0.2)',
+                        borderColor: 'rgba(68, 97, 238, 1)',
+                        pointBackgroundColor: 'rgba(68, 97, 238, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(68, 97, 238, 1)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // 渲染优势智能分析
+        function renderStrengthsAnalysis() {
+            const scores = Object.entries(assessmentData.scores);
+            scores.sort((a, b) => b[1] - a[1]);
+            
+            let html = '';
+            scores.slice(0, 3).forEach(([type, score]) => {
+                const level = score > 15 ? 'high' : score > 10 ? 'medium' : 'low';
+                const typeMap = {
+                    linguistic: '语言智能',
+                    logical: '逻辑智能',
+                    spatial: '空间智能',
+                    musical: '音乐智能',
+                    bodily: '身体智能',
+                    interpersonal: '人际智能',
+                    intrapersonal: '内省智能',
+                    naturalist: '自然智能'
+                };
+                
+                html += `
+                    <div class="bg-gray-50 p-6 rounded-xl mb-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-star text-indigo-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-800 mb-2">${typeMap[type]}</h4>
+                                <p class="text-gray-600">${growthSuggestions[type][level]}</p>
+                                <div class="h-2 bg-gray-200 rounded-full mt-3">
+                                    <div class="h-2 bg-indigo-600 rounded-full" style="width: ${score * 6.66}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            strengthsAnalysisContainer.innerHTML = html;
+        }
+
+        // 渲染成长建议
+        function renderGrowthRecommendations() {
+            const scores = Object.entries(assessmentData.scores);
+            const typeMap = {
+                linguistic: '语言智能',
+                logical: '逻辑智能',
+                spatial: '空间智能',
+                musical: '音乐智能',
+                bodily: '身体智能',
+                interpersonal: '人际智能',
+                intrapersonal: '内省智能',
+                naturalist: '自然智能'
+            };
+            
+            let html = '';
+            scores.forEach(([type, score]) => {
+                const level = score > 15 ? 'high' : score > 10 ? 'medium' : 'low';
+                
+                html += `
+                    <div class="bg-gray-50 p-6 rounded-xl mb-6">
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">${typeMap[type]}</h4>
+                        <p class="text-gray-600">${growthSuggestions[type][level]}</p>
+                    </div>
+                `;
+            });
+            
+            recommendationsContainer.innerHTML = html;
+        }
+
+        // 重新测评
+        function restartAssessment() {
+            // 重置数据
+            assessmentData.currentStep = 0;
+            assessmentData.answers = [];
+            assessmentData.scores = {
+                linguistic: 0,
+                logical: 0,
+                spatial: 0,
+                musical: 0,
+                bodily: 0,
+                interpersonal: 0,
+                intrapersonal: 0,
+                naturalist: 0
+            };
+            
+            resultsSection.classList.add('hidden');
+            
+            // 重新开始
+            const restartConfirm = confirm('确定要重新进行测评吗？这将清除当前结果。');
+            if (restartConfirm) {
+                document.getElementById('intro').classList.remove('hidden');
+            }
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', initAssessment);
+    </script>
+</body>
+</html>
