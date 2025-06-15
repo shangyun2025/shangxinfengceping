@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>职场倦怠指数测试</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- Tailwind配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+            secondary: '#10B981',
+            danger: '#EF4444',
+            neutral: '#6B7280',
+            light: '#F3F4F6',
+            dark: '#1F2937'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          },
+          boxShadow: {
+            'card': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .transition-custom {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .backdrop-blur {
+        backdrop-filter: blur(8px);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen font-sans text-dark">
+  <!-- 密码验证模态框 -->
+  <div id="password-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur transition-custom">
+    <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full mx-4 transform transition-all">
+      <h3 class="text-xl font-bold mb-4 text-center">请输入密码</h3>
+      <p class="text-neutral mb-6 text-center">通过填写测评信息登记表即可获取密码。</p>
+      
+      <div class="mb-6">
+        <label for="password-input" class="block text-sm font-medium text-neutral mb-2">请输入密码：</label>
+        <input type="password" id="password-input" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-custom" placeholder="输入密码...">
+        <p id="password-error" class="text-danger text-sm mt-2 hidden">您的密码不正确，请重新输入。</p>
+      </div>
+      
+      <div class="space-y-3">
+        <button id="password-submit" class="w-full py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-custom shadow-md hover:shadow-lg">
+          确认
+        </button>
+        <a href="https://doc.weixin.qq.com/forms/ANgASAfkAEwASsATgbSAMcCNiQYbJI1Tf?page=1" target="_blank" class="w-full py-3 bg-white text-primary border border-primary rounded-lg hover:bg-blue-50 transition-custom flex items-center justify-center">
+          <i class="fa fa-file-text-o mr-2"></i> 测评信息登记表
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- 头部 -->
+    <header class="text-center mb-12">
+      <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-4 text-shadow">职场倦怠指数测试及建议</h1>
+      <p class="text-lg text-neutral max-w-2xl mx-auto">这个科学的测试将帮助你评估自己的职场倦怠程度，包含22个问题，请根据实际情况作答即可。</p>
+    </header>
+    
+    <!-- 测试卡片 -->
+    <div id="test-card" class="bg-white rounded-2xl shadow-card p-8 mb-8 transition-custom hover:shadow-card-hover">
+      <!-- 进度条 -->
+      <div class="mb-8">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-medium text-neutral">进度</span>
+          <span id="progress-text" class="text-sm font-medium text-primary">1/22</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2.5">
+          <div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width: 4.5%"></div>
+        </div>
+      </div>
+      
+      <!-- 问题区域 -->
+      <div id="question-container">
+        <h2 id="question-text" class="text-xl font-semibold mb-6">1. 我感到工作压力很大，几乎无法承受。</h2>
+        
+        <div id="answers" class="space-y-4">
+          <label class="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-custom">
+            <input type="radio" name="q1" value="1" class="w-5 h-5 text-primary focus:ring-primary mr-3">
+            <span>从不</span>
+          </label>
+          <label class="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-custom">
+            <input type="radio" name="q1" value="2" class="w-5 h-5 text-primary focus:ring-primary mr-3">
+            <span>很少</span>
+          </label>
+          <label class="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-custom">
+            <input type="radio" name="q1" value="3" class="w-5 h-5 text-primary focus:ring-primary mr-3">
+            <span>有时</span>
+          </label>
+          <label class="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-custom">
+            <input type="radio" name="q1" value="4" class="w-5 h-5 text-primary focus:ring-primary mr-3">
+            <span>经常</span>
+          </label>
+          <label class="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-custom">
+            <input type="radio" name="q1" value="5" class="w-5 h-5 text-primary focus:ring-primary mr-3">
+            <span>总是</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- 导航按钮 -->
+      <div class="flex justify-between mt-8">
+        <button id="prev-btn" class="px-6 py-2.5 bg-white text-primary border border-primary rounded-lg hover:bg-blue-50 transition-custom flex items-center opacity-50 cursor-not-allowed">
+          <i class="fa fa-arrow-left mr-2"></i> 上一题
+        </button>
+        <button id="next-btn" class="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-custom flex items-center shadow-md hover:shadow-lg">
+          下一题 <i class="fa fa-arrow-right ml-2"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- 结果卡片 (默认隐藏) -->
+    <div id="result-card" class="bg-white rounded-2xl shadow-card p-8 mb-8 transition-custom hover:shadow-card-hover hidden">
+      <h2 class="text-2xl font-bold mb-6 text-center">你的职场倦怠指数</h2>
+      
+      <div class="flex flex-col items-center mb-8">
+        <div class="relative w-64 h-64">
+          <svg class="w-full h-full" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#F3F4F6" stroke-width="10" />
+            <circle id="result-circle" cx="50" cy="50" r="45" fill="none" stroke="#3B82F6" stroke-width="10" stroke-dasharray="282.74" stroke-dashoffset="141.37" transform="rotate(-90 50 50)" />
+            <text id="result-score" x="50" y="55" text-anchor="middle" font-size="32" font-weight="bold" fill="#3B82F6">50</text>
+            <text x="50" y="75" text-anchor="middle" font-size="14" fill="#6B7280">分</text>
+          </svg>
+        </div>
+        <h3 id="result-level" class="text-xl font-semibold mt-4 text-primary">中度倦怠</h3>
+        <p id="result-description" class="text-center text-neutral mt-2 max-w-lg">你可能正在经历一些职场倦怠的症状，需要关注自己的工作压力和心理健康。</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 flex items-center">
+            <i class="fa fa-tired text-primary mr-2"></i> 情绪耗竭
+          </h4>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+            <div class="bg-primary h-2.5 rounded-full" style="width: 60%"></div>
+          </div>
+          <p class="text-sm text-neutral mt-2">60分 (中度)</p>
+        </div>
+        
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 flex items-center">
+            <i class="fa fa-user-friends text-primary mr-2"></i> 去人性化
+          </h4>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+            <div class="bg-primary h-2.5 rounded-full" style="width: 40%"></div>
+          </div>
+          <p class="text-sm text-neutral mt-2">40分 (轻度)</p>
+        </div>
+        
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 flex items-center">
+            <i class="fa fa-user-check text-primary mr-2"></i> 低成就感
+          </h4>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+            <div class="bg-primary h-2.5 rounded-full" style="width: 50%"></div>
+          </div>
+          <p class="text-sm text-neutral mt-2">50分 (中度)</p>
+        </div>
+      </div>
+      
+      <div class="mb-8">
+        <h4 class="font-semibold text-lg mb-4">综合分析</h4>
+        <div class="space-y-4" id="detailed-analysis">
+          <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <h5 class="font-medium text-primary mb-2 flex items-center">
+              <i class="fa fa-bar-chart mr-2"></i> 整体倦怠水平
+            </h5>
+            <p class="text-neutral" id="overall-analysis">你的职场倦怠指数为中等水平，表明你可能正在经历一些工作压力和疲劳，但尚未达到严重程度。及时采取措施调整工作状态和生活方式，有助于预防倦怠进一步发展。</p>
+          </div>
+          
+          <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <h5 class="font-medium text-primary mb-2 flex items-center">
+              <i class="fa fa-heartbeat mr-2"></i> 情绪耗竭维度
+            </h5>
+            <p class="text-neutral" id="emotional-analysis">你的情绪耗竭水平为中度，可能经常感到工作压力大、情绪疲惫，甚至对工作产生抵触情绪。这可能影响你的工作效率和心理健康，需要特别关注情绪管理和压力缓解。</p>
+          </div>
+          
+          <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <h5 class="font-medium text-primary mb-2 flex items-center">
+              <i class="fa fa-users mr-2"></i> 去人性化维度
+            </h5>
+            <p class="text-neutral" id="depersonalization-analysis">你的去人性化水平为轻度，可能偶尔对工作对象或同事产生冷漠或负面态度。这种倾向若不及时调整，可能影响工作中的人际关系和团队协作。</p>
+          </div>
+          
+          <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <h5 class="font-medium text-primary mb-2 flex items-center">
+              <i class="fa fa-trophy mr-2"></i> 低成就感维度
+            </h5>
+            <p class="text-neutral" id="accomplishment-analysis">你的低成就感水平为中度，可能对自己的工作价值和能力产生怀疑，缺乏工作动力和满足感。这可能影响你的职业发展和工作满意度，需要寻找提升自我效能感的方法。</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mb-8">
+        <h4 class="font-semibold text-lg mb-4">分维度专业建议</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="recommendations">
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h5 class="font-medium text-primary mb-3 flex items-center">
+              <i class="fa fa-heartbeat text-primary mr-2"></i> 情绪管理
+            </h5>
+            <ul class="space-y-2 text-sm text-neutral list-disc pl-5">
+              <li>每天进行10-15分钟的正念冥想或深呼吸练习</li>
+              <li>建立"压力日志"，记录压力源和应对方式</li>
+              <li>每周安排至少3次有氧运动，每次30分钟</li>
+              <li>设定"无工作时段"，避免下班后继续处理工作</li>
+              <li>学习情绪调节技巧，如认知重构和情绪表达</li>
+            </ul>
+          </div>
+          
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h5 class="font-medium text-primary mb-3 flex items-center">
+              <i class="fa fa-users text-primary mr-2"></i> 人际关系
+            </h5>
+            <ul class="space-y-2 text-sm text-neutral list-disc pl-5">
+              <li>每周安排1-2次与同事的非正式交流</li>
+              <li>主动寻求导师或同事的支持与反馈</li>
+              <li>学习积极倾听和非暴力沟通技巧</li>
+              <li>设定明确的工作边界，避免过度承担责任</li>
+              <li>参与团队建设活动，增强团队凝聚力</li>
+            </ul>
+          </div>
+          
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h5 class="font-medium text-primary mb-3 flex items-center">
+              <i class="fa fa-trophy text-primary mr-2"></i> 职业发展
+            </h5>
+            <ul class="space-y-2 text-sm text-neutral list-disc pl-5">
+              <li>设定具体、可衡量的短期和长期职业目标</li>
+              <li>每月进行一次个人绩效评估和自我反思</li>
+              <li>学习新技能或知识，提升职业竞争力</li>
+              <li>主动争取挑战性项目，积累成就感</li>
+              <li>与上级沟通，明确职业发展路径和期望</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mb-8">
+        <h4 class="font-semibold text-lg mb-4">行动计划建议</h4>
+        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <div class="flex items-start mb-4">
+            <div class="flex-shrink-0 bg-primary/10 p-3 rounded-full">
+              <i class="fa fa-calendar-check-o text-primary text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <h5 class="font-medium text-primary mb-2">短期行动计划（1-2周）</h5>
+              <ul class="space-y-2 text-neutral list-disc pl-5">
+                <li>制定详细的每日工作计划，合理分配工作时间</li>
+                <li>每天留出30分钟进行放松活动，如阅读、听音乐</li>
+                <li>与一位信任的同事或朋友分享工作压力</li>
+                <li>调整工作环境，营造舒适的工作氛围</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="flex items-start mt-6">
+            <div class="flex-shrink-0 bg-primary/10 p-3 rounded-full">
+              <i class="fa fa-line-chart text-primary text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <h5 class="font-medium text-primary mb-2">长期行动计划（1-3个月）</h5>
+              <ul class="space-y-2 text-neutral list-disc pl-5">
+                <li>建立规律的作息习惯，保证充足睡眠和营养</li>
+                <li>参加专业技能培训或行业研讨会</li>
+                <li>探索工作中的兴趣点，寻找工作意义</li>
+                <li>考虑调整工作内容或职责，增加工作自主性</li>
+                <li>定期进行职业规划评估和调整</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mb-8">
+        <h4 class="font-semibold text-lg mb-4">何时寻求专业帮助</h4>
+        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+          <p class="text-neutral mb-4">如果出现以下情况，建议寻求专业心理咨询师或医生的帮助：</p>
+          <ul class="space-y-2 text-neutral list-disc pl-5">
+            <li>持续感到情绪低落、焦虑或绝望，影响日常生活</li>
+            <li>出现身体症状，如头痛、失眠、疲劳等，且无明显生理原因</li>
+            <li>对工作或生活完全失去兴趣，缺乏动力</li>
+            <li>难以集中注意力，工作效率显著下降</li>
+            <li>出现人际关系问题，如与同事、家人冲突增加</li>
+            <li>有消极或自杀念头</li>
+          </ul>
+        </div>
+      </div>
+      
+      <button id="restart-btn" class="w-full py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-custom shadow-md hover:shadow-lg flex items-center justify-center">
+        <i class="fa fa-refresh mr-2"></i> 重新测试
+      </button>
+    </div>
+    
+    <!-- 信息卡片 -->
+    <div class="bg-white rounded-2xl shadow-card p-8 transition-custom hover:shadow-card-hover">
+      <h3 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fa fa-info-circle text-primary mr-2"></i> 关于职场倦怠
+      </h3>
+      <p class="mb-4 text-neutral">职场倦怠是一种由长期工作压力引起的心理综合征，主要表现为情绪耗竭、去人性化（对工作对象和同事持消极态度）和低成就感。</p>
+      <p class="text-neutral">本测试倦怠量表(MBI)，是评估职场倦怠最广泛使用的工具之一，包含22个问题，涵盖了职场倦怠的三个主要维度。</p>
+    </div>
+  </div>
+  
+  <!-- 页脚 -->
+  <footer class="text-center py-6 text-neutral text-sm">
+    <p>© 2025 上新峰 | 职场心理测评 | 本测试仅供参考，不构成专业医疗建议</p>
+  </footer>
+  
+  <script>
+    // 问题数据
+    const questions = [
+      "我感到工作压力很大，几乎无法承受。",
+      "早晨起床想到要面对一天的工作，我感到非常疲惫。",
+      "我对工作感到麻木，缺乏热情。",
+      "我觉得自己的工作对他人没有什么意义。",
+      "我经常感到情绪耗尽，无法应对工作需求。",
+      "我对工作对象（如客户、患者、学生等）变得冷漠或麻木。",
+      "我感到自己在工作中没有取得什么成就。",
+      "我难以投入精力到工作中。",
+      "我觉得工作让我身心俱疲。",
+      "我开始对工作对象产生负面看法。",
+      "我怀疑自己工作的价值。",
+      "我感到自己的能力不足以应对工作要求。",
+      "我对工作中的问题感到无助。",
+      "我对工作失去了兴趣。",
+      "我觉得自己的工作没有得到应有的认可。",
+      "我在工作中感到孤独。",
+      "我经常感到沮丧或绝望。",
+      "我对工作中的人际关系感到厌倦。",
+      "我觉得自己的工作没有什么挑战性。",
+      "我难以在工作中找到满足感。",
+      "我对工作感到恐惧或焦虑。",
+      "我觉得自己的工作没有什么发展机会。"
+    ];
+    
+    // 问题分类（1-8: 情绪耗竭, 9-14: 去人性化, 15-22: 低成就感）
+    const questionCategories = [
+      'emotional-exhaustion', 'emotional-exhaustion', 'emotional-exhaustion', 'emotional-exhaustion',
+      'emotional-exhaustion', 'emotional-exhaustion', 'emotional-exhaustion', 'emotional-exhaustion',
+      'depersonalization', 'depersonalization', 'depersonalization', 'depersonalization',
+      'depersonalization', 'depersonalization',
+      'reduced-personal-accomplishment', 'reduced-personal-accomplishment',
+      'reduced-personal-accomplishment', 'reduced-personal-accomplishment',
+      'reduced-personal-accomplishment', 'reduced-personal-accomplishment',
+      'reduced-personal-accomplishment', 'reduced-personal-accomplishment'
+    ];
+    
+    // 用户答案存储
+    const answers = Array(questions.length).fill(null);
+    
+    // 当前问题索引
+    let currentQuestionIndex = 0;
+    
+    // DOM元素
+    const questionText = document.getElementById('question-text');
+    const answersContainer = document.getElementById('answers');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const testCard = document.getElementById('test-card');
+    const resultCard = document.getElementById('result-card');
+    const resultScore = document.getElementById('result-score');
+    const resultLevel = document.getElementById('result-level');
+    const resultDescription = document.getElementById('result-description');
+    const resultCircle = document.getElementById('result-circle');
+    const restartBtn = document.getElementById('restart-btn');
+    const overallAnalysis = document.getElementById('overall-analysis');
+    const emotionalAnalysis = document.getElementById('emotional-analysis');
+    const depersonalizationAnalysis = document.getElementById('depersonalization-analysis');
+    const accomplishmentAnalysis = document.getElementById('accomplishment-analysis');
+    const passwordModal = document.getElementById('password-modal');
+    const passwordInput = document.getElementById('password-input');
+    const passwordSubmit = document.getElementById('password-submit');
+    const passwordError = document.getElementById('password-error');
+    
+    // 检查是否已验证
+    const isAuthenticated = localStorage.getItem('burnoutTestAuthenticated') === 'true';
+    
+    // 如果未验证，显示密码模态框
+    if (!isAuthenticated) {
+      passwordModal.classList.remove('hidden');
+      passwordModal.classList.add('flex');
+    }
+    
+    // 密码验证
+    passwordSubmit.addEventListener('click', () => {
+      const password = passwordInput.value.trim();
+      
+      if (password === 'sxfzccp') {
+        // 验证成功
+        localStorage.setItem('burnoutTestAuthenticated', 'true');
+        passwordModal.classList.add('hidden');
+        passwordModal.classList.remove('flex');
+      } else {
+        // 验证失败
+        passwordError.classList.remove('hidden');
+        passwordInput.classList.add('border-danger');
+        passwordInput.classList.add('focus:ring-danger');
+        
+        // 3秒后自动清除错误提示
+        setTimeout(() => {
+          passwordError.classList.add('hidden');
+          passwordInput.classList.remove('border-danger');
+          passwordInput.classList.remove('focus:ring-danger');
+        }, 3000);
+      }
+    });
+    
+    // 回车键提交密码
+    passwordInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') {
+        passwordSubmit.click();
+      }
+    });
+    
+    // 更新问题显示
+    function updateQuestion() {
+      // 添加问题序号
+      questionText.textContent = `${currentQuestionIndex + 1}. ${questions[currentQuestionIndex]}`;
+      
+      // 清空之前的答案
+      answersContainer.innerHTML = '';
+      
+      // 创建新的答案选项
+      for (let i = 1; i <= 5; i++) {
+        const label = document.createElement('label');
+        label.className = 'flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-custom';
+        
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = `q${currentQuestionIndex + 1}`;
+        input.value = i;
+        input.className = 'w-5 h-5 text-primary focus:ring-primary mr-3';
+        
+        // 如果已有答案，选中对应的选项
+        if (answers[currentQuestionIndex] === i) {
+          input.checked = true;
+        }
+        
+        // 添加点击事件
+        input.addEventListener('change', (e) => {
+          answers[currentQuestionIndex] = parseInt(e.target.value);
+          updateButtonStates();
+        });
+        
+        const textOptions = ['从不', '很少', '有时', '经常', '总是'];
+        const span = document.createElement('span');
+        span.textContent = textOptions[i - 1];
+        
+        label.appendChild(input);
+        label.appendChild(span);
+        answersContainer.appendChild(label);
+      }
+      
+      // 更新进度
+      const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressBar.style.width = `${progressPercentage}%`;
+      progressText.textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+      
+      // 更新按钮状态
+      updateButtonStates();
+    }
+    
+    // 更新按钮状态
+    function updateButtonStates() {
+      // 上一题按钮
+      if (currentQuestionIndex === 0) {
+        prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+      
+      // 下一题/完成按钮
+      if (currentQuestionIndex === questions.length - 1) {
+        nextBtn.innerHTML = '<i class="fa fa-check mr-2"></i> 完成测试';
+      } else {
+        nextBtn.innerHTML = '下一题 <i class="fa fa-arrow-right ml-2"></i>';
+      }
+      
+      // 如果当前问题没有答案，禁用下一题按钮
+      if (answers[currentQuestionIndex] === null) {
+        nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+    
+    // 计算结果
+    function calculateResult() {
+      // 计算总分
+      let totalScore = answers.reduce((sum, answer) => sum + answer, 0);
+      
+      // 计算各维度得分
+      const categoryScores = {
+        'emotional-exhaustion': 0,
+        'depersonalization': 0,
+        'reduced-personal-accomplishment': 0
+      };
+      
+      const categoryCounts = {
+        'emotional-exhaustion': 0,
+        'depersonalization': 0,
+        'reduced-personal-accomplishment': 0
+      };
+      
+      answers.forEach((answer, index) => {
+        const category = questionCategories[index];
+        categoryScores[category] += answer;
+        categoryCounts[category]++;
+      });
+      
+      // 计算各维度平均分（转换为0-100分制）
+      const emotionalExhaustionScore = Math.round((categoryScores['emotional-exhaustion'] / categoryCounts['emotional-exhaustion']) * 20);
+      const depersonalizationScore = Math.round((categoryScores['depersonalization'] / categoryCounts['depersonalization']) * 20);
+      const reducedPersonalAccomplishmentScore = Math.round((categoryScores['reduced-personal-accomplishment'] / categoryCounts['reduced-personal-accomplishment']) * 20);
+      
+      // 计算最终得分（三个维度的平均分）
+      const finalScore = Math.round((emotionalExhaustionScore + depersonalizationScore + reducedPersonalAccomplishmentScore) / 3);
+      
+      // 更新结果显示
+      resultScore.textContent = finalScore;
+      
+      // 更新环形进度条
+      const circumference = 2 * Math.PI * 45;
+      const offset = circumference - (finalScore / 100) * circumference;
+      resultCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+      resultCircle.style.strokeDashoffset = offset;
+      
+      // 根据得分设置级别和描述
+      let level, description, color;
+      
+      if (finalScore < 30) {
+        level = "无倦怠";
+        description = "你的工作状态良好，能够有效地应对工作压力，保持健康的工作与生活平衡。建议继续保持当前的工作节奏和生活方式。";
+        color = "#10B981"; // 绿色
+        
+        // 更新详细分析
+        overallAnalysis.textContent = "你的职场倦怠指数极低，表明你目前工作状态良好，压力管理得当。继续保持积极的工作态度和健康的生活方式，定期进行自我评估，预防倦怠的发生。";
+      } else if (finalScore < 50) {
+        level = "轻度倦怠";
+        description = "你可能偶尔会感到工作压力，但仍能保持工作动力和效率。建议关注自己的压力水平，适时调整工作节奏，避免倦怠进一步发展。";
+        color = "#3B82F6"; // 蓝色
+        
+        // 更新详细分析
+        overallAnalysis.textContent = "你的职场倦怠指数处于轻度水平，表明你可能偶尔会感到工作压力和疲劳，但仍能维持正常的工作和生活。建议关注自身压力信号，及时调整工作节奏，培养健康的应对策略。";
+      } else if (finalScore < 70) {
+        level = "中度倦怠";
+        description = "你可能正在经历一些职场倦怠的症状，需要关注自己的工作压力和心理健康。建议采取措施调整工作节奏，寻求支持，并考虑进行职业规划评估。";
+        color = "#F59E0B"; // 橙色
+        
+        // 更新详细分析
+        overallAnalysis.textContent = "你的职场倦怠指数处于中度水平，表明你可能正在经历明显的工作压力和疲劳，这可能影响你的工作效率和生活质量。建议优先关注自身心理健康，调整工作方式，寻求社会支持，并考虑专业心理咨询。";
+      } else {
+        level = "重度倦怠";
+        description = "你可能已经处于严重的职场倦怠状态，这可能会影响你的工作表现、身体健康和人际关系。建议尽快寻求专业帮助，并考虑调整工作环境或职责。";
+        color = "#EF4444"; // 红色
+        
+        // 更新详细分析
+        overallAnalysis.textContent = "你的职场倦怠指数处于重度水平，表明你可能已经处于严重的职业倦怠状态，这可能对你的身心健康、工作表现和人际关系造成显著影响。建议立即寻求专业心理咨询或医疗帮助，并考虑对工作环境或职业选择进行重大调整。";
+      }
+      
+      // 更新维度分析
+      updateDimensionAnalysis(emotionalExhaustionScore, depersonalizationScore, reducedPersonalAccomplishmentScore);
+      
+      resultLevel.textContent = level;
+      resultLevel.style.color = color;
+      resultDescription.textContent = description;
+      
+      // 更新各维度进度条
+      document.querySelector('.bg-primary[style*="width: 60%"]').style.backgroundColor = color;
+      document.querySelector('.bg-primary[style*="width: 40%"]').style.backgroundColor = color;
+      document.querySelector('.bg-primary[style*="width: 50%"]').style.backgroundColor = color;
+      
+      // 显示结果卡片
+      testCard.classList.add('hidden');
+      resultCard.classList.remove('hidden');
+      
+      // 添加动画效果
+      resultCard.classList.add('animate-fade-in');
+    }
+    
+    // 更新维度分析内容
+    function updateDimensionAnalysis(emotionalScore, depersonalizationScore, accomplishmentScore) {
+      // 情绪耗竭分析
+      let emotionalText = "";
+      if (emotionalScore < 30) {
+        emotionalText = "你的情绪耗竭水平很低，表明你能够较好地管理工作压力，保持积极的情绪状态。继续保持健康的工作习惯和情绪调节策略。";
+      } else if (emotionalScore < 50) {
+        emotionalText = "你的情绪耗竭水平处于轻度，可能偶尔会感到工作压力和疲劳，但仍能保持情绪稳定。建议关注自身情绪变化，适时进行放松和调整。";
+      } else if (emotionalScore < 70) {
+        emotionalText = "你的情绪耗竭水平处于中度，可能经常感到工作压力大、情绪疲惫，甚至对工作产生抵触情绪。这可能影响你的工作效率和心理健康，需要特别关注情绪管理和压力缓解。";
+      } else {
+        emotionalText = "你的情绪耗竭水平很高，可能长期处于高压状态，感到情绪耗尽、无法应对工作需求。这可能对你的身心健康造成严重影响，建议立即寻求专业帮助，并调整工作方式。";
+      }
+      emotionalAnalysis.textContent = emotionalText;
+      
+      // 去人性化分析
+      let depersonalizationText = "";
+      if (depersonalizationScore < 30) {
+        depersonalizationText = "你的去人性化水平很低，表明你能够保持积极的工作态度和良好的人际关系。继续保持同理心和团队合作精神。";
+      } else if (depersonalizationScore < 50) {
+        depersonalizationText = "你的去人性化水平处于轻度，可能偶尔对工作对象或同事产生冷漠或负面态度。建议加强沟通和理解，培养积极的人际关系。";
+      } else if (depersonalizationScore < 70) {
+        depersonalizationText = "你的去人性化水平处于中度，可能对工作对象或同事产生明显的冷漠、疏离或负面评价。这可能影响工作中的人际关系和团队协作，需要调整心态，增强同理心和沟通技巧。";
+      } else {
+        depersonalizationText = "你的去人性化水平很高，可能对工作对象和同事持严重的消极态度，甚至产生厌恶或敌意。这可能严重影响你的工作环境和职业发展，建议尽快寻求专业心理咨询，改善人际关系。";
+      }
+      depersonalizationAnalysis.textContent = depersonalizationText;
+      
+      // 低成就感分析
+      let accomplishmentText = "";
+      if (accomplishmentScore < 30) {
+        accomplishmentText = "你的个人成就感水平很高，对自己的工作能力和成就有充分的信心。继续设定挑战性目标，保持职业成长动力。";
+      } else if (accomplishmentScore < 50) {
+        accomplishmentText = "你的个人成就感水平处于轻度，可能偶尔对自己的工作价值和能力产生怀疑，但总体上仍能保持工作动力。建议关注自己的成就和进步，增强自我肯定。";
+      } else if (accomplishmentScore < 70) {
+        accomplishmentText = "你的个人成就感水平处于中度，可能对自己的工作价值和能力产生持续的怀疑，缺乏工作动力和满足感。这可能影响你的职业发展和工作满意度，需要重新审视职业目标，寻找提升自我效能感的方法。";
+      } else {
+        accomplishmentText = "你的个人成就感水平很低，可能对自己的工作能力和价值完全失去信心，感到工作没有意义和成就感。这可能导致严重的职业倦怠和心理健康问题，建议立即寻求专业帮助，重新规划职业发展路径。";
+      }
+      accomplishmentAnalysis.textContent = accomplishmentText;
+    }
+    
+    // 事件监听
+    prevBtn.addEventListener('click', () => {
+      if (currentQuestionIndex > 0 && !prevBtn.classList.contains('cursor-not-allowed')) {
+        currentQuestionIndex--;
+        updateQuestion();
+      }
+    });
+    
+    nextBtn.addEventListener('click', () => {
+      if (answers[currentQuestionIndex] !== null && !nextBtn.classList.contains('cursor-not-allowed')) {
+        if (currentQuestionIndex === questions.length - 1) {
+          // 完成测试，计算结果
+          calculateResult();
+        } else {
+          // 下一题
+          currentQuestionIndex++;
+          updateQuestion();
+        }
+      }
+    });
+    
+    restartBtn.addEventListener('click', () => {
+      // 重置答案和当前问题
+      answers.fill(null);
+      currentQuestionIndex = 0;
+      
+      // 更新问题显示
+      updateQuestion();
+      
+      // 显示测试卡片，隐藏结果卡片
+      resultCard.classList.add('hidden');
+      testCard.classList.remove('hidden');
+    });
+    
+    // 初始化第一个问题
+    updateQuestion();
+  </script>
+</body>
+</html>
+    
