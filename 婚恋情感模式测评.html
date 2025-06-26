@@ -7,19 +7,26 @@
     <title>情感模式诊断测评</title>
     <!-- 版权声明 -->
     <meta name="copyright" content="Copyright © 2025 尚合强. All rights reserved.">
+    <!-- 引入 Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
             padding: 20px;
         }
 
         h1 {
             text-align: center;
+            color: #007BFF;
+            margin-bottom: 20px;
         }
 
         form {
-            max-width: 800px;
-            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         fieldset {
@@ -31,6 +38,7 @@
 
         legend {
             font-weight: bold;
+            color: #007BFF;
         }
 
         label {
@@ -60,6 +68,7 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -71,6 +80,8 @@
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         /* 密码验证模态框样式 */
@@ -114,6 +125,20 @@
             padding: 8px;
             box-sizing: border-box;
         }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #result {
+            animation: fadeIn 0.5s ease;
+        }
     </style>
 </head>
 
@@ -124,13 +149,13 @@
         <fieldset>
             <legend>一、个人基本信息</legend>
             <label for="gender">你的性别：</label>
-            <select id="gender" name="gender" required>
+            <select id="gender" name="gender" required class="form-select">
                 <option value="">请选择</option>
                 <option value="男">男</option>
                 <option value="女">女</option>
             </select>
             <label for="age">你的年龄：</label>
-            <select id="age" name="age" required>
+            <select id="age" name="age" required class="form-select">
                 <option value="">请选择</option>
                 <option value="18岁以下">18岁以下</option>
                 <option value="18-25">18-25岁</option>
@@ -141,7 +166,7 @@
                 <option value="51+">51岁以上</option>
             </select>
             <label for="relationshipStatus">目前情感状态：</label>
-            <select id="relationshipStatus" name="relationshipStatus" required>
+            <select id="relationshipStatus" name="relationshipStatus" required class="form-select">
                 <option value="">请选择</option>
                 <option value="单身">单身</option>
                 <option value="恋爱中">恋爱中</option>
@@ -149,7 +174,7 @@
                 <option value="离异">离异</option>
             </select>
             <label for="relationshipDuration">恋爱时长（若有）：</label>
-            <select id="relationshipDuration" name="relationshipDuration">
+            <select id="relationshipDuration" name="relationshipDuration" class="form-select">
                 <option value="">请选择</option>
                 <option value="不到1个月">不到1个月</option>
                 <option value="1 - 3个月">1 - 3个月</option>
@@ -225,8 +250,8 @@
             <strong>26. 当恋人在你面前哭泣时，你会：</strong>
             <div id="partnerCryOptions"></div>
         </fieldset>
-        <button type="button" id="submitBtn">提交测评</button>
-        <button type="reset" id="resetBtn">重置测评</button>
+        <button type="button" id="submitBtn" class="btn btn-primary">提交测评</button>
+        <button type="reset" id="resetBtn" class="btn btn-secondary">重置测评</button>
     </form>
     <div id="result"></div>
 
@@ -652,16 +677,16 @@
                 // 根据测评结果推荐书籍
                 resultText += "<br>推荐书籍：<br>";
                 if (communicationCountB > 1 || communicationPattern === 'C') {
-                    resultText += "- 《非暴力沟通》：帮助你学会更好地表达自己，倾听他人，避免沟通中的冲突和误解。<br>";
+                    resultText += "- <a href='https://book.douban.com/subject/10792043/' target='_blank'>《非暴力沟通》</a>：帮助你学会更好地表达自己，倾听他人，避免沟通中的冲突和误解。<br>";
                 }
                 if (emotionManagement1 === 'C' || emotionManagement2 === 'C' || emotionManagementPattern === 'C') {
-                    resultText += "- 《情绪急救》：提供应对各种负面情绪的有效方法，帮助你管理情绪，减少情绪对生活的影响。<br>";
+                    resultText += "- <a href='https://book.douban.com/subject/26712763/' target='_blank'>《情绪急救》</a>：提供应对各种负面情绪的有效方法，帮助你管理情绪，减少情绪对生活的影响。<br>";
                 }
                 if (attachmentPattern === 'B' || attachmentPattern === 'D') {
-                    resultText += "- 《依恋与亲密关系》：深入探讨依恋模式对亲密关系的影响，帮助你了解自己和伴侣的依恋类型，改善亲密关系。<br>";
+                    resultText += "- <a href='https://book.douban.com/subject/26847443/' target='_blank'>《依恋与亲密关系》</a>：深入探讨依恋模式对亲密关系的影响，帮助你了解自己和伴侣的依恋类型，改善亲密关系。<br>";
                 }
                 if (selfChange === 'C' || selfChange === 'D') {
-                    resultText += "- 《终身成长》：介绍成长型思维模式，鼓励你开放心态，接受改变，实现个人成长。<br>";
+                    resultText += "- <a href='https://book.douban.com/subject/26343003/' target='_blank'>《终身成长》</a>：介绍成长型思维模式，鼓励你开放心态，接受改变，实现个人成长。<br>";
                 }
 
                 resultText += "<br><button id='contactAdvisorBtn'>联系专业情感顾问</button>";
