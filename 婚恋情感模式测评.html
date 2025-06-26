@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情感模式诊断测评</title>
+    <!-- 版权声明 -->
+    <meta name="copyright" content="Copyright © 2025 尚合强. All rights reserved.">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        fieldset {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        legend {
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* 密码验证模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>情感模式诊断测评</h1>
+    <p style="text-align: center; font-size: 12px;">了解自我情感模式，处理好亲情、友情和爱情</p>
+    <form id="assessmentForm">
+        <fieldset>
+            <legend>一、个人基本信息</legend>
+            <label for="gender">你的性别：</label>
+            <select id="gender" name="gender" required>
+                <option value="">请选择</option>
+                <option value="男">男</option>
+                <option value="女">女</option>
+            </select>
+            <label for="age">你的年龄：</label>
+            <select id="age" name="age" required>
+                <option value="">请选择</option>
+                <option value="18岁以下">18岁以下</option>
+                <option value="18-25">18-25岁</option>
+                <option value="26-30">26-30岁</option>
+                <option value="31-35">31-35岁</option>
+                <option value="36-40">36-40岁</option>
+                <option value="41-50">41-50岁</option>
+                <option value="51+">51岁以上</option>
+            </select>
+            <label for="relationshipStatus">目前情感状态：</label>
+            <select id="relationshipStatus" name="relationshipStatus" required>
+                <option value="">请选择</option>
+                <option value="单身">单身</option>
+                <option value="恋爱中">恋爱中</option>
+                <option value="已婚">已婚</option>
+                <option value="离异">离异</option>
+            </select>
+            <label for="relationshipDuration">恋爱时长（若有）：</label>
+            <select id="relationshipDuration" name="relationshipDuration">
+                <option value="">请选择</option>
+                <option value="不到1个月">不到1个月</option>
+                <option value="1 - 3个月">1 - 3个月</option>
+                <option value="3 - 6个月">3 - 6个月</option>
+                <option value="6 - 12个月">6 - 12个月</option>
+                <option value="1年以上">1年以上</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <legend>二、情感模式测评</legend>
+            <!-- 新增依恋模式相关问题 -->
+            <strong>1. 当恋人要出差几天，你会：</strong>
+            <div id="attachmentPatternOptions"></div>
+
+            <!-- 新增沟通模式相关问题 -->
+            <strong>2. 当你和恋人产生分歧时，你通常的沟通方式是：</strong>
+            <div id="communicationPatternOptions"></div>
+
+            <!-- 新增情绪管理模式相关问题 -->
+            <strong>3. 当你和恋人吵架后，你会：</strong>
+            <div id="emotionManagementPatternOptions"></div>
+
+            <!-- 新增亲密关系价值观模式相关问题 -->
+            <strong>4. 你认为恋爱中最重要的是：</strong>
+            <div id="intimacyValuePatternOptions"></div>
+
+            <!-- 新增原生家庭影响相关问题 -->
+            <strong>5. 你父母在处理冲突时的方式通常是：</strong>
+            <div id="familyInfluencePatternOptions"></div>
+
+            <strong>6. 你在处理和恋人的冲突时，更倾向于：</strong>
+            <div id="familyInfluencePattern2Options"></div>
+
+            <!-- 原有的测评题目 -->
+            <strong>7. 你如何定义爱情？</strong>
+            <div id="loveDefinitionOptions"></div>
+            <strong>8. 你认为恋爱中最重要的因素是什么？</strong>
+            <div id="importantFactorOptions"></div>
+            <strong>9. 在与恋人沟通时，你通常：</strong>
+            <div id="communicationStyle1Options"></div>
+            <strong>10. 当与恋人产生分歧时，你会：</strong>
+            <div id="communicationStyle2Options"></div>
+            <strong>11. 恋爱中遇到挫折，如争吵、冷战，你一般：</strong>
+            <div id="emotionManagement1Options"></div>
+            <strong>12. 当恋人让你失望时，你会：</strong>
+            <div id="emotionManagement2Options"></div>
+            <strong>13. 你希望与恋人相处的频率是：</strong>
+            <div id="intimacyFrequencyOptions"></div>
+            <strong>14. 在亲密行为方面（如拥抱、亲吻、性行为），你：</strong>
+            <div id="intimacyBehaviorOptions"></div>
+            <strong>15. 你是否愿意为了恋爱关系的更好发展而改变自己的一些习惯或性格特点？</strong>
+            <div id="selfChangeOptions"></div>
+            <strong>16. 你希望恋人在哪些方面做出改变：</strong>
+            <div id="partnerChangeOptions"></div>
+            <strong>17. 当你和恋人一起参加社交活动时，你会：</strong>
+            <div id="socialActivityOptions"></div>
+            <strong>18. 对于恋人的过去感情经历，你：</strong>
+            <div id="pastRelationshipOptions"></div>
+            <strong>19. 当你和恋人有共同的目标时，你会：</strong>
+            <div id="commonGoalOptions"></div>
+            <strong>20. 恋人送你一件你不太喜欢的礼物，你会：</strong>
+            <div id="giftReactionOptions"></div>
+            <strong>21. 你认为恋人之间的秘密应该：</strong>
+            <div id="relationshipSecretOptions"></div>
+            <strong>22. 当恋人工作忙碌忽略你时，你会：</strong>
+            <div id="busyNeglectOptions"></div>
+            <strong>23. 你和恋人吵架后，通常谁先主动和好：</strong>
+            <div id="reconciliationOptions"></div>
+            <strong>24. 你会因为恋人的梦想和自己的生活规划有冲突而：</strong>
+            <div id="dreamConflictOptions"></div>
+            <strong>25. 对于恋人的兴趣爱好，你会：</strong>
+            <div id="partnerHobbyOptions"></div>
+            <strong>26. 当恋人在你面前哭泣时，你会：</strong>
+            <div id="partnerCryOptions"></div>
+        </fieldset>
+        <button type="button" id="submitBtn">提交测评</button>
+        <button type="reset" id="resetBtn">重置测评</button>
+    </form>
+    <div id="result"></div>
+
+    <!-- 情感顾问联系方式模态框 -->
+    <div id="advisorModal" class="modal">
+        <div class="modal-content">
+            <span class="closeAdvisor">&times;</span>
+            <h2>情感顾问联系方式</h2>
+            <p>姓名：尚老师</p>
+            <p>电话：13910380858</p>
+            <p>微信：lianheziqiang</p>
+        </div>
+    </div>
+
+    <!-- 新增的版权声明 -->
+    <p style="text-align: center; font-size: 12px; margin-top: 20px;">Copyright © 2025 尚合强. All rights reserved.</p>
+
+    <script>
+        // 定义每个问题的选项
+        const questionOptions = {
+            attachmentPattern: [
+                { value: 'A', text: '相信对方，自己也能安排好生活，不会过度担心。' },
+                { value: 'B', text: '很担心对方会在外面变心，频繁联系对方确认情况。' },
+                { value: 'C', text: '觉得对方离开自己的生活也没什么影响，不会主动联系。' },
+                { value: 'D', text: '一开始会很不舍，频繁联系对方，但后来又觉得这样不好，故意减少联系。' }
+            ],
+            communicationPattern: [
+                { value: 'A', text: '直接表达自己的感受和想法，同时认真倾听对方的意见，一起协商解决。' },
+                { value: 'B', text: '选择沉默，等对方主动来沟通，或者干脆冷处理。' },
+                { value: 'C', text: '指责对方的不对，情绪激动地表达自己的不满。' },
+                { value: 'D', text: '为了避免冲突，先顺着对方的意思，隐藏自己的真实想法。' }
+            ],
+            emotionManagementPattern: [
+                { value: 'A', text: '很快冷静下来，分析吵架的原因，思考如何解决问题。' },
+                { value: 'B', text: '立刻哭泣或向朋友倾诉，寻求安慰。' },
+                { value: 'C', text: '表面装作没事，但心里一直很生气，晚上可能会失眠。' },
+                { value: 'D', text: '会通过购物、美食等方式转移注意力，暂时忘却烦恼。' }
+            ],
+            intimacyValuePattern: [
+                { value: 'A', text: '双方能够共同规划未来，有稳定的物质基础。' },
+                { value: 'B', text: '能够和对方有精神上的共鸣，是彼此的灵魂伴侣。' },
+                { value: 'C', text: '恋爱中要有新鲜感和激情，充满浪漫的体验。' },
+                { value: 'D', text: '对方能够认可自己，自己的价值取决于对方的态度。' }
+            ],
+            familyInfluencePattern: [
+                { value: 'A', text: '双方冷静沟通，协商解决问题。' },
+                { value: 'B', text: '一方强势指责，另一方默默忍受。' },
+                { value: 'C', text: '双方冷战，互不说话。' },
+                { value: 'D', text: '父母的相处模式比较和谐，很少有冲突。' }
+            ],
+            familyInfluencePattern2: [
+                { value: 'A', text: '模仿父母的方式。' },
+                { value: 'B', text: '采取和父母相反的方式。' },
+                { value: 'C', text: '根据冲突的具体情况，灵活选择方式。' },
+                { value: 'D', text: '先回避冲突，等双方情绪都稳定后再处理。' }
+            ],
+            loveDefinition: [
+                { value: 'A', text: '相互陪伴' },
+                { value: 'B', text: '心灵契合' },
+                { value: 'C', text: '激情碰撞' },
+                { value: 'D', text: '责任担当' }
+            ],
+            importantFactor: [
+                { value: 'A', text: '信任' },
+                { value: 'B', text: '沟通' },
+                { value: 'C', text: '共同兴趣' },
+                { value: 'D', text: '相互理解' }
+            ],
+            communicationStyle1: [
+                { value: 'A', text: '先倾听对方，再表达自己' },
+                { value: 'B', text: '急于表达自己观点，很少耐心倾听' },
+                { value: 'C', text: '有时倾听，有时急于表达，看心情' },
+                { value: 'D', text: '不太愿意主动沟通，等对方找自己' }
+            ],
+            communicationStyle2: [
+                { value: 'A', text: '尝试换位思考，寻找妥协方案' },
+                { value: 'B', text: '坚持自己观点，试图说服对方' },
+                { value: 'C', text: '生气回避，不想继续讨论' },
+                { value: 'D', text: '寻求第三方（如朋友、家人）帮忙调解' }
+            ],
+            emotionManagement1: [
+                { value: 'A', text: '很快冷静下来，分析问题根源' },
+                { value: 'B', text: '需要一段时间才能平复情绪，期间会有些消沉' },
+                { value: 'C', text: '情绪波动很大，长时间陷入负面情绪' },
+                { value: 'D', text: '表面平静，内心积累不满，日后可能爆发' }
+            ],
+            emotionManagement2: [
+                { value: 'A', text: '直接告诉对方你的感受，希望改进' },
+                { value: 'B', text: '暗自伤心，不太愿意表露' },
+                { value: 'C', text: '抱怨给其他朋友听，不跟恋人说' },
+                { value: 'D', text: '觉得无所谓，不太在意' }
+            ],
+            intimacyFrequency: [
+                { value: 'A', text: '每天都见面或联系' },
+                { value: 'B', text: '隔几天见一次，平时保持一定联系' },
+                { value: 'C', text: '周末或节假日见面就好，平时各自忙碌' },
+                { value: 'D', text: '看心情，没有固定需求' }
+            ],
+            intimacyBehavior: [
+                { value: 'A', text: '比较主动，乐于表达亲密需求' },
+                { value: 'B', text: '被动接受，等待对方主动' },
+                { value: 'C', text: '有时主动，有时被动，取决于情境' },
+                { value: 'D', text: '不太在意，可有可无' }
+            ],
+            selfChange: [
+                { value: 'A', text: '非常愿意，只要对关系有益' },
+                { value: 'B', text: '愿意尝试，但有一定限度' },
+                { value: 'C', text: '不太愿意，觉得自己挺好的' },
+                { value: 'D', text: '坚决不愿意，认为对方应该适应自己' }
+            ],
+            partnerChange: [
+                { value: 'A', text: '生活习惯' },
+                { value: 'B', text: '沟通方式' },
+                { value: 'C', text: '职业规划' },
+                { value: 'D', text: '兴趣爱好' }
+            ],
+            socialActivity: [
+                { value: 'A', text: '主动和恋人的朋友交流，融入圈子' },
+                { value: 'B', text: '只和自己熟悉的人交流，与恋人朋友保持距离' },
+                { value: 'C', text: '跟着恋人，看恋人的交流情况再行动' },
+                { value: 'D', text: '不太喜欢这种场合，希望早点离开' }
+            ],
+            pastRelationship: [
+                { value: 'A', text: '完全不在意，更看重现在和未来' },
+                { value: 'B', text: '偶尔会好奇，但不会过多追问' },
+                { value: 'C', text: '经常会忍不住询问，心里会有些介意' },
+                { value: 'D', text: '非常介意，甚至会因此和恋人产生矛盾' }
+            ],
+            commonGoal: [
+                { value: 'A', text: '积极主动地制定计划并推动实施' },
+                { value: 'B', text: '和恋人一起商量制定计划，但执行力一般' },
+                { value: 'C', text: '等恋人主导，自己配合就行' },
+                { value: 'D', text: '不太在意共同目标，觉得顺其自然就好' }
+            ],
+            giftReaction: [
+                { value: 'A', text: '开心地收下，并表达感谢' },
+                { value: 'B', text: '收下礼物，但会委婉地表达自己的喜好' },
+                { value: 'C', text: '表现出不太满意的神情' },
+                { value: 'D', text: '直接告诉恋人自己不喜欢，让其重新选' }
+            ],
+            relationshipSecret: [
+                { value: 'A', text: '完全坦诚，没有任何秘密' },
+                { value: 'B', text: '可以有一些小秘密，但不能影响关系' },
+                { value: 'C', text: '每个人都有自己的空间，秘密不需要分享' },
+                { value: 'D', text: '看情况，如果是重要的秘密才分享' }
+            ],
+            busyNeglect: [
+                { value: 'A', text: '理解对方，自己找事情做，等对方有空再联系' },
+                { value: 'B', text: '偶尔会发消息提醒对方，但不会过多抱怨' },
+                { value: 'C', text: '经常抱怨，觉得对方不在乎自己' },
+                { value: 'D', text: '大发脾气，要求对方立刻放下工作陪自己' }
+            ],
+            reconciliation: [
+                { value: 'A', text: '总是你主动和好' },
+                { value: 'B', text: '大多是对方主动和好' },
+                { value: 'C', text: '看谁错在先，错的人主动和好' },
+                { value: 'D', text: '谁都不愿意主动，冷战很久' }
+            ],
+            dreamConflict: [
+                { value: 'A', text: '全力支持恋人的梦想，调整自己的规划' },
+                { value: 'B', text: '和恋人商量，寻找折中的办法' },
+                { value: 'C', text: '坚持自己的规划，让恋人调整' },
+                { value: 'D', text: '觉得两人不合适，考虑分手' }
+            ],
+            partnerHobby: [
+                { value: 'A', text: '积极参与，和恋人一起培养共同爱好' },
+                { value: 'B', text: '表示理解和支持，但自己不参与' },
+                { value: 'C', text: '不太在意，觉得各玩各的也挺好' },
+                { value: 'D', text: '反感恋人的爱好，希望对方改变' }
+            ],
+            partnerCry: [
+                { value: 'A', text: '立刻安慰，给对方温暖的拥抱' },
+                { value: 'B', text: '等对方情绪稍微稳定后再询问原因并安慰' },
+                { value: 'C', text: '觉得有点烦，但还是会简单安慰几句' },
+                { value: 'D', text: '不知所措，不知道该怎么安慰' }
+            ]
+        };
+
+        // 随机排序函数
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 生成随机选项
+        function generateRandomOptions(questionName) {
+            const options = questionOptions[questionName];
+            const shuffledOptions = shuffleArray([...options]);
+            const container = document.getElementById(`${questionName}Options`);
+            container.innerHTML = '';
+            shuffledOptions.forEach(option => {
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = questionName;
+                input.value = option.value;
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(option.text));
+                container.appendChild(label);
+            });
+        }
+
+        // 初始化所有问题的选项
+        function initializeOptions() {
+            for (const questionName in questionOptions) {
+                generateRandomOptions(questionName);
+            }
+        }
+
+        // 获取DOM元素
+        const form = document.getElementById('assessmentForm');
+        const resultDiv = document.getElementById('result');
+        const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const advisorModal = document.getElementById('advisorModal');
+        const closeAdvisorBtn = document.getElementsByClassName('closeAdvisor')[0];
+
+        // 初始化选项
+        initializeOptions();
+
+        // 重置按钮事件监听器
+        resetBtn.addEventListener('click', () => {
+            initializeOptions();
+        });
+
+        // 计算测评结果
+        function calculateResult() {
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                if (!data[key]) {
+                    data[key] = [];
+                }
+                data[key].push(value);
+            });
+
+            let resultText = "测评结果分析：<br>";
+
+            try {
+                // 情感认知类型
+                const loveDefinition = data['loveDefinition'] ? data['loveDefinition'] : [];
+                if (loveDefinition.includes('A') && loveDefinition.includes('D')) {
+                    resultText += "情感认知类型：务实型情感认知，注重关系的稳定性与责任落实。<br>";
+                } else if (loveDefinition.includes('B')) {
+                    resultText += "情感认知类型：精神契合型，追求灵魂深度共鸣。<br>";
+                } else if (loveDefinition.includes('C')) {
+                    resultText += "情感认知类型：激情驱动型，看重恋爱中的热烈氛围。<br>";
+                }
+
+                // 沟通模式判定
+                const communicationStyle1 = data['communicationStyle1'] ? data['communicationStyle1'][0] : '';
+                const communicationStyle2 = data['communicationStyle2'] ? data['communicationStyle2'][0] : '';
+                let communicationCountA = 0;
+                let communicationCountB = 0;
+                let communicationCountC = 0;
+                let communicationCountD = 0;
+                if (communicationStyle1 === 'A') communicationCountA++;
+                if (communicationStyle1 === 'B') communicationCountB++;
+                if (communicationStyle1 === 'C') communicationCountC++;
+                if (communicationStyle1 === 'D') communicationCountD++;
+                if (communicationStyle2 === 'A') communicationCountA++;
+                if (communicationStyle2 === 'B') communicationCountB++;
+                if (communicationStyle2 === 'C') communicationCountC++;
+                if (communicationStyle2 === 'D') communicationCountD++;
+
+                if (communicationCountA > 1) {
+                    resultText += "沟通模式判定：良好沟通型，善于倾听与协调。<br>";
+                } else if (communicationCountB > 1) {
+                    resultText += "沟通模式判定：自我中心型，沟通易受阻。<br>";
+                } else if (communicationCountC > 1) {
+                    resultText += "沟通模式判定：不稳定沟通型，沟通效果波动大。<br>";
+                } else if (communicationCountD > 1) {
+                    resultText += "沟通模式判定：被动等待型，可能错过沟通时机。<br>";
+                }
+
+                // 情绪管理能力
+                const emotionManagement1 = data['emotionManagement1'] ? data['emotionManagement1'][0] : '';
+                const emotionManagement2 = data['emotionManagement2'] ? data['emotionManagement2'][0] : '';
+                if (emotionManagement1 === 'A' || emotionManagement2 === 'A') {
+                    resultText += "情绪管理能力：强，能理性应对问题。<br>";
+                } else if (emotionManagement1 === 'B' || emotionManagement2 === 'B') {
+                    resultText += "情绪管理能力：中等水平，需一定时间恢复情绪。<br>";
+                } else if (emotionManagement1 === 'C' || emotionManagement2 === 'C') {
+                    resultText += "情绪管理能力：较弱，易受情绪左右。<br>";
+                } else if (emotionManagement1 === 'D' || emotionManagement2 === 'D') {
+                    resultText += "情绪管理能力：可能存在情绪压抑隐患。<br>";
+                }
+
+                // 亲密关系偏好
+                const intimacyFrequency = data['intimacyFrequency'] ? data['intimacyFrequency'][0] : '';
+                const intimacyBehavior = data['intimacyBehavior'] ? data['intimacyBehavior'][0] : '';
+                if ((intimacyFrequency === 'A' || intimacyFrequency === 'B') && (intimacyBehavior === 'A' || intimacyBehavior === 'C')) {
+                    resultText += "亲密关系偏好：高型，对亲密接触渴望程度高。<br>";
+                } else if ((intimacyFrequency === 'C' || intimacyFrequency === 'D') && (intimacyBehavior === 'B' || intimacyBehavior === 'D')) {
+                    resultText += "亲密关系偏好：低型，对亲密接触渴望程度低。<br>";
+                } else {
+                    resultText += "亲密关系偏好：中型，对亲密接触渴望程度中等。<br>";
+                }
+
+                // 成长意愿评估
+                const selfChange = data['selfChange'] ? data['selfChange'][0] : '';
+                if (selfChange === 'A') {
+                    resultText += "成长意愿评估：高，利于关系动态发展。<br>";
+                } else if (selfChange === 'B') {
+                    resultText += "成长意愿评估：有一定成长意愿，需引导。<br>";
+                } else if (selfChange === 'C' || selfChange === 'D') {
+                    resultText += "成长意愿评估：低，可能给关系带来挑战。<br>";
+                }
+
+                // 新增测试题结果分析示例（可根据实际情况完善）
+                const socialActivity = data['socialActivity'] ? data['socialActivity'][0] : '';
+                if (socialActivity === 'A') {
+                    resultText += "社交融入方面：积极主动型，能较好地融入恋人社交圈。<br>";
+                } else if (socialActivity === 'B') {
+                    resultText += "社交融入方面：保守型，与恋人社交圈保持一定距离。<br>";
+                } else if (socialActivity === 'C') {
+                    resultText += "社交融入方面：跟随型，依赖恋人在社交中的引导。<br>";
+                } else if (socialActivity === 'D') {
+                    resultText += "社交融入方面：回避型，不太喜欢社交场合。<br>";
+                }
+
+                // 依恋模式分析
+                const attachmentPattern = data['attachmentPattern'] ? data['attachmentPattern'][0] : '';
+                if (attachmentPattern === 'A') {
+                    resultText += "依恋模式：安全型依恋，信任他人，能舒适地表达情感，在关系中感到安全。<br>";
+                } else if (attachmentPattern === 'B') {
+                    resultText += "依恋模式：焦虑型依恋，对关系过度敏感，担心被抛弃。<br>";
+                } else if (attachmentPattern === 'C') {
+                    resultText += "依恋模式：回避型依恋，回避情感依赖，强调个人空间。<br>";
+                } else if (attachmentPattern === 'D') {
+                    resultText += "依恋模式：混乱型依恋，同时存在焦虑和回避的矛盾行为。<br>";
+                }
+
+                // 沟通模式细化分析
+                const communicationPattern = data['communicationPattern'] ? data['communicationPattern'][0] : '';
+                if (communicationPattern === 'A') {
+                    resultText += "沟通模式（细化）：主动沟通型，直接表达感受，积极解决冲突。<br>";
+                } else if (communicationPattern === 'B') {
+                    resultText += "沟通模式（细化）：被动回避型，压抑情感，回避矛盾。<br>";
+                } else if (communicationPattern === 'C') {
+                    resultText += "沟通模式（细化）：攻击型沟通，通过指责、批评表达不满。<br>";
+                } else if (communicationPattern === 'D') {
+                    resultText += "沟通模式（细化）：讨好型沟通，优先满足对方需求，隐藏自身不满。<br>";
+                }
+
+                // 情绪管理模式分析
+                const emotionManagementPattern = data['emotionManagementPattern'] ? data['emotionManagementPattern'][0] : '';
+                if (emotionManagementPattern === 'A') {
+                    resultText += "情绪管理模式：理性调节型，快速冷静，分析情绪根源。<br>";
+                } else if (emotionManagementPattern === 'B') {
+                    resultText += "情绪管理模式：感性宣泄型，通过哭泣、倾诉释放情绪。<br>";
+                } else if (emotionManagementPattern === 'C') {
+                    resultText += "情绪管理模式：压抑内耗型，表面平静，内心积压负面情绪。<br>";
+                }
+
+                // 亲密关系价值观模式分析
+                const intimacyValuePattern = data['intimacyValuePattern'] ? data['intimacyValuePattern'][0] : '';
+                if (intimacyValuePattern === 'A') {
+                    resultText += "亲密关系价值观模式：务实型，重视责任、稳定性与物质基础。<br>";
+                } else if (intimacyValuePattern === 'B') {
+                    resultText += "亲密关系价值观模式：理想型，追求精神契合、浪漫体验。<br>";
+                } else if (intimacyValuePattern === 'C') {
+                    resultText += "亲密关系价值观模式：激情型，以强烈的情感吸引为基础。<br>";
+                } else if (intimacyValuePattern === 'D') {
+                    resultText += "亲密关系价值观模式：依赖型，将情感寄托于对方。<br>";
+                }
+
+                // 原生家庭影响分析
+                const familyInfluencePattern = data['familyInfluencePattern'] ? data['familyInfluencePattern'][0] : '';
+                const familyInfluencePattern2 = data['familyInfluencePattern2'] ? data['familyInfluencePattern2'][0] : '';
+                if (familyInfluencePattern2 === 'A') {
+                    resultText += "原生家庭影响模式：复制型模式，无意识模仿父母的情感互动方式。<br>";
+                } else if (familyInfluencePattern2 === 'B') {
+                    resultText += "原生家庭影响模式：反向型模式，刻意采取和父母相反的行为。<br>";
+                }
+
+                // 个性化情感建议
+                resultText += "<br>个性化情感建议：<br>";
+
+                // 沟通模式建议
+                if (communicationCountA > 1) {
+                    resultText += "你有着良好的沟通模式，继续保持倾听和协调的能力。在日常交流中，可以更加深入地理解恋人的观点，尝试提出一些创新性的解决方案，以进一步增进你们之间的默契。<br>";
+                } else if (communicationCountB > 1) {
+                    resultText += "你在沟通中较为自我中心，这可能会让恋人感到被忽视。建议你在与恋人交流时，先在心里默数三秒，提醒自己耐心倾听对方说完。当对方表达完后，用自己的话重复一遍对方的观点，以确认自己理解正确，然后再表达自己的想法。<br>";
+                } else if (communicationCountC > 1) {
+                    resultText += "你的沟通效果不太稳定，这可能会让恋人感到困惑。你可以制定一个沟通计划，例如每周安排一次固定的时间进行深度沟通，在这个时间段内，专注倾听对方，避免打断。同时，在情绪激动时，先深呼吸三次，让自己平静下来再进行交流。<br>";
+                } else if (communicationCountD > 1) {
+                    resultText += "你在沟通中比较被动，这可能会使恋人难以了解你的内心想法。你可以设定一个目标，比如每天主动发起一次聊天，分享自己当天的经历或感受。也可以尝试使用一些开放性的问题，引导恋人展开话题。<br>";
+                }
+
+                // 情绪管理建议
+                if (emotionManagement1 === 'A' || emotionManagement2 === 'A') {
+                    resultText += "你的情绪管理能力很强，继续保持理性应对问题的态度。不过，在面对恋人的负面情绪时，可以给予更多的情感支持，比如一个温暖的拥抱或一个鼓励的眼神。<br>";
+                } else if (emotionManagement1 === 'B' || emotionManagement2 === 'B') {
+                    resultText += "你恢复情绪需要一定时间，当遇到情绪问题时，除了运动和听音乐，还可以尝试写情绪日记，把自己的感受记录下来，这有助于你更好地理解自己的情绪。同时，及时与恋人沟通你的情绪状态，让对方知道你需要一些时间来调整。<br>";
+                } else if (emotionManagement1 === 'C' || emotionManagement2 === 'C') {
+                    resultText += "你容易受情绪左右，建议你学习一些情绪调节的技巧。比如，当你感到情绪激动时，尝试进行渐进性肌肉松弛训练，先紧绷身体各部位的肌肉，然后慢慢放松。也可以提前准备一些能让自己平静下来的物品，如香薰、抱枕等。<br>";
+                } else if (emotionManagement1 === 'D' || emotionManagement2 === 'D') {
+                    resultText += "你可能存在情绪压抑的情况，长期积累负面情绪会对感情关系造成伤害。你可以找一个安全的环境，如与亲密的朋友倾诉，或者进行一些激烈的运动来释放情绪。同时，学会用恰当的方式向恋人表达自己的不满，比如使用“我感到……因为……我希望……”的句式。<br>";
+                }
+
+                // 亲密关系建议
+                if ((intimacyFrequency === 'A' || intimacyFrequency === 'B') && (intimacyBehavior === 'A' || intimacyBehavior === 'C')) {
+                    resultText += "你对亲密接触的渴望程度较高，要注意与恋人沟通彼此的需求。可以和恋人一起制定一个亲密计划，安排一些专属的亲密时光，如每周一次的约会或每月一次的旅行。同时，也要尊重恋人的个人空间，不要让对方感到压力过大。<br>";
+                } else if ((intimacyFrequency === 'C' || intimacyFrequency === 'D') && (intimacyBehavior === 'B' || intimacyBehavior === 'D')) {
+                    resultText += "你对亲密接触的渴望程度较低，和恋人坦诚地交流你的想法非常重要。可以找一个合适的时机，坐下来与恋人沟通你对亲密关系的看法和需求，了解对方的期望，共同寻找一个双方都能接受的平衡点。例如，可以偶尔安排一些轻松的亲密活动，如一起看电影、散步等。<br>";
+                } else {
+                    resultText += "你对亲密接触的渴望程度适中，根据双方的感受和情况，灵活调整亲密关系的节奏就好。在日常相处中，可以多留意恋人的身体语言和情感信号，适时给予对方一些亲密的举动，如牵手、拥抱等，以增进彼此的感情。<br>";
+                }
+
+                // 成长意愿建议
+                if (selfChange === 'A') {
+                    resultText += "你有着很高的成长意愿，这对感情关系的发展非常有利。你可以和恋人一起设定一些共同的成长目标，如学习一门新技能、培养一个新爱好等。在实现目标的过程中，相互支持和鼓励，共同成长。<br>";
+                } else if (selfChange === 'B') {
+                    resultText += "你有一定的成长意愿，需要适当的引导。可以和恋人一起讨论双方的优点和不足，共同制定一些小目标，逐步实现自我提升。<br>";
+                } else if (selfChange === 'C' || selfChange === 'D') {
+                    resultText += "你的成长意愿较低，这可能会给感情关系带来一些挑战。你可以试着开放心态，接受一些小的改变，从简单的事情做起，如尝试新的美食、学习新的技能等。<br>";
+                }
+
+                // 根据测评结果推荐书籍
+                resultText += "<br>推荐书籍：<br>";
+                if (communicationCountB > 1 || communicationPattern === 'C') {
+                    resultText += "- 《非暴力沟通》：帮助你学会更好地表达自己，倾听他人，避免沟通中的冲突和误解。<br>";
+                }
+                if (emotionManagement1 === 'C' || emotionManagement2 === 'C' || emotionManagementPattern === 'C') {
+                    resultText += "- 《情绪急救》：提供应对各种负面情绪的有效方法，帮助你管理情绪，减少情绪对生活的影响。<br>";
+                }
+                if (attachmentPattern === 'B' || attachmentPattern === 'D') {
+                    resultText += "- 《依恋与亲密关系》：深入探讨依恋模式对亲密关系的影响，帮助你了解自己和伴侣的依恋类型，改善亲密关系。<br>";
+                }
+                if (selfChange === 'C' || selfChange === 'D') {
+                    resultText += "- 《终身成长》：介绍成长型思维模式，鼓励你开放心态，接受改变，实现个人成长。<br>";
+                }
+
+                resultText += "<br><button id='contactAdvisorBtn'>联系专业情感顾问</button>";
+
+                resultDiv.innerHTML = resultText;
+
+                // 为联系专业情感顾问按钮添加点击事件
+                const contactAdvisorBtn = document.getElementById('contactAdvisorBtn');
+                contactAdvisorBtn.addEventListener('click', () => {
+                    advisorModal.style.display = 'block';
+                });
+
+            } catch (error) {
+                resultDiv.innerHTML = "测评结果计算出错，请检查填写内容。";
+            }
+        }
+
+        // 提交按钮事件监听器
+        submitBtn.addEventListener('click', calculateResult);
+
+        // 关闭模态框事件监听器
+        closeAdvisorBtn.addEventListener('click', () => {
+            advisorModal.style.display = 'none';
+        });
+
+        // 点击模态框外部关闭模态框
+        window.addEventListener('click', (event) => {
+            if (event.target === advisorModal) {
+                advisorModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
